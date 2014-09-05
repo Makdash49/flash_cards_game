@@ -1,10 +1,12 @@
 require_relative 'cards'
 require_relative 'console'
+require_relative 'player'
+# require_relative ''
 
 class Game
 
 	def initialize
-		@cards = Cards.new
+		@cards = Cards.new 
 		@console = Console.new
 
 		init_game
@@ -20,13 +22,13 @@ class Game
 
 	def create_welcome_message
 		name = @console.display_name
-		@player = Player.new(name)
+		@player = Player.new(name, 0)
 		@console.display_welcome(name)
 	end
 
 	def create_deck_of_cards
 		num_of_cards = @console.display_how_many_cards
-		@cards.create_deck(num_of_cards)
+		@cards.create_deck(num_of_cards.to_i)
 	end
 
 	def run!
@@ -44,8 +46,14 @@ class Game
 	end
 
 	def finish_game
-		@console.display_game_finish(@player.score)
-		start_game if @console.display_play_again_message == "yes"
+		@console.display_game_finish(@player.score, @player.user_name)
+		input = @console.display_play_again_message
+		
+		@console.error_message unless input == "yes" || input == "no"
+
+		init_game if input == "yes"
+			
+
 	end
 end
 
